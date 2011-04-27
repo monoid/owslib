@@ -121,8 +121,7 @@ class WebMapService(object):
                 cm.children = gather_layers(elem, cm)
             return layers
 
-        # TODO: check that there is at least 1 layer?
-        self.root = gather_layers(caps, None)[0]
+        self.layers = gather_layers(caps, None)
         
         #exceptions
         self.exceptions = [f.text for f \
