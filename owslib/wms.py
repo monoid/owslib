@@ -1,4 +1,4 @@
-# -*- coding: ISO-8859-15 -*-
+# -*- coding: iso-8859-15 -*-
 # =============================================================================
 # Copyright (c) 2004, 2006 Sean C. Gillies
 # Copyright (c) 2005 Nuxeo SARL <http://nuxeo.com>
@@ -110,14 +110,19 @@ class WebMapService(object):
         #recursively gather content metadata for all layer elements.
         #To the WebMapService.contents store only metadata of named layers.
         def gather_layers(parent_elem, parent_metadata):
+            layers = []
             for index, elem in enumerate(parent_elem.findall('Layer')):
                 cm = ContentMetadata(elem, parent=parent_metadata, index=index+1)
+                layers.append(cm)
                 if cm.id:
                     if cm.id in self.contents:
                         raise KeyError('Content metadata for layer "%s" already exists' % cm.id)
                     self.contents[cm.id] = cm
-                gather_layers(elem, cm)
-        gather_layers(caps, None)
+                cm.children = gather_layers(elem, cm)
+            return layers
+
+        # TODO: check that there is at least 1 layer?
+        self.root = gather_layers(caps, None)[0]
         
         #exceptions
         self.exceptions = [f.text for f \
