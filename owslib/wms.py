@@ -311,6 +311,8 @@ class ContentMetadata:
     Implements IContentMetadata.
     """
     def __init__(self, elem, parent=None, index=0):
+        self.elem = elem
+        
         if elem.tag != 'Layer':
             raise ValueError('%s should be a Layer' % (elem,))
         
